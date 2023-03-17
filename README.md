@@ -15,7 +15,7 @@
     (1) RRT and self-developed informed sampling method to refine RRT in Matlab
    
     (2) RRT* for ROS/C++
-		
-		(3) todo: informed RRT* for ROS/C++
+    
+    (3) todo: informed RRT* for ROS/C++
 		
 		 
