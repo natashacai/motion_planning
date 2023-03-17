@@ -22,4 +22,4 @@
 
 5: Minimum Jerk trajectory generation via BIVP for ROS/C++
 		 
-6: Vehcile Model Predictive Controller for ROS/C++, should install OSQP solver first
+6: Vehicle Model Predictive Controller for ROS/C++, should install OSQP solver first
