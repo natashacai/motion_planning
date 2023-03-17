@@ -27,7 +27,7 @@ backward::SignalHandling sh;
 
 // simulation param from launch file
 double _resolution, _inv_resolution, _cloud_margin;
-double _x_size, _y_size, _z_size;    
+double _x_size, _y_size, _z_size;
 
 // useful global variables
 bool _has_map   = false;

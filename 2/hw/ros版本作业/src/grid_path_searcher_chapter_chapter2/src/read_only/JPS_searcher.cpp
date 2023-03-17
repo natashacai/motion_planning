@@ -205,7 +205,7 @@ void JPSPathFinder::JPSGraphSearch(Eigen::Vector3d start_pt, Eigen::Vector3d end
                 neighborPtr -> fScore = fn;
                 neighborPtr -> cameFrom = currentPtr; // pointer to parent node 
                 
-                # expande the neighbour 
+                // expande the neighbour 
                 for(int i = 0; i < 3; i++){
                     neighborPtr->dir(i) = neighborPtr->index(i) - currentPtr->index(i);
                     if( neighborPtr->dir(i) != 0)
@@ -219,7 +219,7 @@ void JPSPathFinder::JPSGraphSearch(Eigen::Vector3d start_pt, Eigen::Vector3d end
                 {
                     ros::Time time_2 = ros::Time::now();
                     terminatePtr = neighborPtr;
-                    ROS_WARN("[A*]{sucess}  Time in A*  is %f ms, path cost if %f m", (time_2 - time_1).toSec() * 1000.0, neighborPtr->gScore * resolution);            
+                    ROS_WARN("[JPS*]{sucess}  Time in JPS*  is %f ms, path cost if %f m", (time_2 - time_1).toSec() * 1000.0, neighborPtr->gScore * resolution);            
                     return;
                 }
                 else

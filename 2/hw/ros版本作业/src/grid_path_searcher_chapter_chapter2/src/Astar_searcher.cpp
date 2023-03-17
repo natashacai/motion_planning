@@ -80,8 +80,8 @@ vector<Vector3d> AstarPathFinder::getVisitedNodes()
     for(int i = 0; i < GLX_SIZE; i++)
         for(int j = 0; j < GLY_SIZE; j++)
             for(int k = 0; k < GLZ_SIZE; k++){   
-                //if(GridNodeMap[i][j][k]->id != 0) // visualize all nodes in open and close list
-                if(GridNodeMap[i][j][k]->id == -1)  // visualize nodes in close list only
+                if(GridNodeMap[i][j][k]->id != 0) // visualize all nodes in open and close list
+                //if(GridNodeMap[i][j][k]->id == -1)  // visualize nodes in close list only
                     visited_nodes.push_back(GridNodeMap[i][j][k]->coord);
             }
 
@@ -191,8 +191,8 @@ double AstarPathFinder::getHeu(GridNodePtr node1, GridNodePtr node2)
     Vector3d difference = (node1->coord - node2->coord);
 
     // tie breaker
-    double h_multiplier = 1;
-    //double h_multiplier = 1 + 1/25;
+    //double h_multiplier = 1;
+    double h_multiplier = 1 + 0.001;
     /*
     #define tie_break 1
     #if tie_break
@@ -207,7 +207,7 @@ double AstarPathFinder::getHeu(GridNodePtr node1, GridNodePtr node2)
     */
 
     // euclidean_distance
-    #define Euclidean 1 
+    #define Euclidean 0 
     #if Euclidean
     {
         double euclidean_distance = difference.norm(); 
@@ -234,16 +234,16 @@ double AstarPathFinder::getHeu(GridNodePtr node1, GridNodePtr node2)
     #endif
 
     // diagonal_distance
-    #define Diagonal 0
+    #define Diagonal 1
     #if Diagonal
     {
         double D1 = 1;
         double D2 = sqrt(2);
         double D3 = sqrt(3);
         
-        double dx = fabs(node1->coord(0), node2->coord(0));
-        double dy = fabs(node1->coord(1), node2->coord(1));
-        double dz = fabs(node1->coord(2), node2->coord(2));
+        double dx = abs(node1->coord(0) - node2->coord(0));
+        double dy = abs(node1->coord(1) - node2->coord(1));
+        double dz = abs(node1->coord(2) - node2->coord(2));
         double dmin = min(dx, dy);
         dmin = min(dmin, dz);
         double dmax = max(dx, dy);
