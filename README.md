@@ -17,5 +17,7 @@
     (2) RRT* for ROS/C++
     
     (3) todo: informed RRT* for ROS/C++
+    
+4: Local Lattice planner for ROS/C++
 		
 		 
