@@ -19,5 +19,6 @@
     (3) todo: informed RRT* for ROS/C++
     
 4: Local Lattice planner for ROS/C++
-		
+
+5: Minimum Jerk trajectory generation via BIVP for ROS/C++
 		 
