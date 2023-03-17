@@ -19,4 +19,4 @@ path = A_star_search(map, MAX_X,MAX_Y);
 visualize_map(map, path, []);
 
 % save map
-% save('Data/map.mat', 'map', 'MAX_X', 'MAX_Y');
+save('map3.mat', 'map', 'MAX_X', 'MAX_Y');

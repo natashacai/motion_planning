@@ -1,97 +1,148 @@
 function path = A_star_search(map,MAX_X,MAX_Y)
 %%
 %This part is about map/obstacle/and other settings
-    %pre-process the grid map, add offset
-    size_map = size(map,1);
-    Y_offset = 0;
-    X_offset = 0;
-    
-    %Define the 2D grid map array.
-    %Obstacle=-1, Target = 0, Start=1
-    MAP=2*(ones(MAX_X,MAX_Y));
-    
-    %Initialize MAP with location of the target
-    xval=floor(map(size_map, 1)) + X_offset;
-    yval=floor(map(size_map, 2)) + Y_offset;
-    xTarget=xval;
-    yTarget=yval;
-    MAP(xval,yval)=0;
-    
-    %Initialize MAP with location of the obstacle
-    for i = 2: size_map-1
-        xval=floor(map(i, 1)) + X_offset;
-        yval=floor(map(i, 2)) + Y_offset;
-        MAP(xval,yval)=-1;
-    end 
-    
-    %Initialize MAP with location of the start point
-    xval=floor(map(1, 1)) + X_offset;
-    yval=floor(map(1, 2)) + Y_offset;
-    xStart=xval;
-    yStart=yval;
-    MAP(xval,yval)=1;
+%pre-process the grid map, add offset
+size_map = size(map,1);
+Y_offset = 0;
+X_offset = 0;
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %LISTS USED FOR ALGORITHM
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %OPEN LIST STRUCTURE
-    %--------------------------------------------------------------------------
-    %IS ON LIST 1/0 |X val |Y val |Parent X val |Parent Y val |h(n) |g(n)|f(n)|
-    %--------------------------------------------------------------------------
-    OPEN=[];
-    %CLOSED LIST STRUCTURE
-    %--------------
-    %X val | Y val |
-    %--------------
-    % CLOSED=zeros(MAX_VAL,2);
-    CLOSED=[];
+%Define the 2D grid map array.
+%Obstacle=-1, Target = 0, Start=1
+MAP=2*(ones(MAX_X,MAX_Y));
 
-    %Put all obstacles on the Closed list
-    k=1;%Dummy counter
-    for i=1:MAX_X
-        for j=1:MAX_Y
-            if(MAP(i,j) == -1)
-                CLOSED(k,1)=i;
-                CLOSED(k,2)=j;
-                k=k+1;
-            end
+%Initialize MAP with location of the target
+xval=floor(map(size_map, 1)) + X_offset;
+yval=floor(map(size_map, 2)) + Y_offset;
+xTarget=xval;
+yTarget=yval;
+MAP(xval,yval)=0;
+
+%Initialize MAP with location of the obstacle
+for i = 2: size_map-1
+    xval=floor(map(i, 1)) + X_offset;
+    yval=floor(map(i, 2)) + Y_offset;
+    MAP(xval,yval)=-1;
+end
+
+%Initialize MAP with location of the start point
+xval=floor(map(1, 1)) + X_offset;
+yval=floor(map(1, 2)) + Y_offset;
+xStart=xval;
+yStart=yval;
+MAP(xStart,yStart)=1;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%LISTS USED FOR ALGORITHM
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%OPEN LIST STRUCTURE
+%--------------------------------------------------------------------------
+%IS ON LIST 1/0 |X val |Y val |Parent X val |Parent Y val |h(n) |g(n)|f(n)|
+%--------------------------------------------------------------------------
+OPEN=[];
+%CLOSED LIST STRUCTURE
+%--------------
+%X val | Y val |
+%--------------
+% CLOSED=zeros(MAX_VAL,2);
+CLOSED=[];
+
+%Put all obstacles on the Closed list
+k=1;%Dummy counter
+for i=1:MAX_X
+    for j=1:MAX_Y
+        if(MAP(i,j) == -1)
+            CLOSED(k,1)=i;
+            CLOSED(k,2)=j;
+            k=k+1;
         end
     end
-    CLOSED_COUNT=size(CLOSED,1);
-    %set the starting node as the first node
-    xNode=xval;
-    yNode=yval;
-    OPEN_COUNT=1;
-    goal_distance=distance(xNode,yNode,xTarget,yTarget);
-    path_cost=0;
-    OPEN(OPEN_COUNT,:)=insert_open(xNode,yNode,xNode,yNode,goal_distance,path_cost,goal_distance);
-    OPEN(OPEN_COUNT,1)=0;
-    CLOSED_COUNT=CLOSED_COUNT+1;
-    CLOSED(CLOSED_COUNT,1)=xNode;
-    CLOSED(CLOSED_COUNT,2)=yNode;
-    NoPath=1;
+end
+CLOSED_COUNT=size(CLOSED,1);
+%set the starting node as the first node
+xNode=xval;
+yNode=yval;
+OPEN_COUNT=1;  %count the number of nodes added into open list
+goal_distance=distance(xNode,yNode,xTarget,yTarget); % h(n)=L2 norm
+path_cost=0;  % g(n)
+OPEN(OPEN_COUNT,:)=insert_open(xNode,yNode,xNode,yNode,goal_distance,path_cost,goal_distance); % add to the open list
+OPEN(OPEN_COUNT,1)=1; %% change the start node to 1
+%CLOSED_COUNT=CLOSED_COUNT+1;
+%CLOSED(CLOSED_COUNT,1)=xNode;
+%CLOSED(CLOSED_COUNT,2)=yNode;
+NoPath=1;
 
 %%
 %This part is your homework
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % START ALGORITHM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    while(0) %you have to dicide the Conditions for while loop exit 
-        
-     %
-     %finish the while loop
-     %
-     
-    end %End of While Loop
+count_while = 0;
+while(isempty(OPEN)==false) %you have to dicide the Conditions for while loop exit
+    count_while = count_while + 1;
     
-    %Once algorithm has run The optimal path is generated by starting of at the
-    %last node(if it is the target node) and then identifying its parent node
-    %until it reaches the start node.This is the optimal path
+    % 1. pop the node with lowest fn out from open list
+    min_node_index = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
+    current_node = OPEN(min_node_index,:);
     
-    %
-    %How to get the optimal path after A_star search?
-    %please finish it
-    %
+    % 1.1 if current node is target then break while loop
+    if (current_node(2)== xTarget) && (current_node(3)== yTarget)
+        CLOSED_COUNT=CLOSED_COUNT+1;
+        CLOSED(CLOSED_COUNT,1)=xTarget;
+        CLOSED(CLOSED_COUNT,2)=yTarget;
+        OPEN(min_node_index,1) = 0;
+        break;
+    end
     
-   path = [];
+    % 2.1 expand the neighbour of current node
+    exp_array = expand_array(current_node(2),current_node(3),current_node(7),xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
+    for i_exp=1:size(exp_array, 1)
+        xval = exp_array(i_exp,1);
+        yval = exp_array(i_exp,2);
+        hn = exp_array(i_exp,3);
+        gn = exp_array(i_exp,4);
+        fn = exp_array(i_exp,5);
+        if sum(all(OPEN(:,2:3)==[xval, yval], 2)) == 0
+            %if expand node not in open list, push it to open list
+            OPEN_COUNT = OPEN_COUNT + 1;
+            OPEN(OPEN_COUNT,:)=insert_open(xval,yval,current_node(2),current_node(3),hn,gn,fn);
+        else
+            node_i = node_index(OPEN, xval,yval);
+            %OPEN(node_i,6) = min(OPEN(node_i,6), hn);
+            OPEN(node_i,7) = min(OPEN(node_i,7), gn);
+            OPEN(node_i,8) = OPEN(node_i,7) + OPEN(node_i,6);
+            %OPEN(node_i,8) = min(OPEN(node_i,8), fn);
+        end
+    end %end of for
+    CLOSED_COUNT=CLOSED_COUNT+1;
+    CLOSED(CLOSED_COUNT,1)=current_node(2);
+    CLOSED(CLOSED_COUNT,2)=current_node(3);
+    OPEN(min_node_index,1) = 0;
+    
+    
+%     if current_node(2)==3 && current_node(3)==3
+%         break;
+%     end
+
+end %End of While Loop
+
+%Once algorithm has run The optimal path is generated by starting of at the
+%last node(if it is the target node) and then identifying its parent node
+%until it reaches the start node.This is the optimal path
+
+%
+%How to get the optimal path after A_star search?
+%please finish it
+%
+path = [xTarget, yTarget];
+row_count = size(OPEN, 1);
+while(row_count)
+    current_index = node_index(OPEN,path(1,1),path(1,2));
+    parent_x = OPEN(current_index, 4);
+    parent_y = OPEN(current_index, 5);
+    path = [[parent_x,parent_y]; path];
+    row_count = row_count-1;
+    if (parent_x == xStart) && ((parent_x == yStart))
+        break;
+    end
+end
 end
